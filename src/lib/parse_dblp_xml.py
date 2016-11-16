@@ -13,7 +13,7 @@ paper_tag  =['article','inproceedings','proceedings','book',
     包括CHI，VAST, TVCG, PacificVis， InfoVis，EuroVis，Information Visualization（期刊）,JOV(journal of visuzalition), The Visual Computer
 '''
 
-choose_venues = ['conf/chi/','conf/ieeevast/','journals/tvcg/','conf/apvis/','conf/infovis/','conf/vissym/','journals/cgf/','journals/ivs/','conf/jvis/','journals/vc/']
+CHOOSE_VENUES = ['conf/chi/','conf/ieeevast/','journals/tvcg/','conf/apvis/','conf/infovis/','conf/vissym/','journals/cgf/','journals/ivs/','conf/jvis/','journals/vc/']
 
 
 class xmlHandler(handler.ContentHandler):
@@ -46,8 +46,6 @@ class xmlHandler(handler.ContentHandler):
 
         self.extentYear.sort()
         print("时间范围：",min(self.extentYear),"--",max(self.extentYear))
-        print("范围：",self.extentYear)
-        print("总文章数：",len(self.parse_result))
         print("总作者数：",len(self.isExsitAuthor.keys()))
         print('Parse Successfully!')
 
@@ -128,10 +126,9 @@ if __name__ == "__main__":
     source_file_path = "../../dblp.xml"
     parse_result_path = "../../test/parse_result.json"
     spe_chara_path = "../../specialCharacter.json"
-    # 选择的期刊或者会议
-    # 包括 CHI，VAST, TVCG, PacificVis， InfoVis，EuroVis，Information Visualization（期刊）
+
 
     start = time.time() # 开始时间
-    parse(source_file_path,parse_result_path,choose_venues,1990)      # 解析xml
+    parse(source_file_path,parse_result_path,CHOOSE_VENUES,1990)      # 解析xml
     end = time.time()  # 结束时间
     print("运行时间为：",end-start)

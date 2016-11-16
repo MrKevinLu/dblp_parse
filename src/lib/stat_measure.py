@@ -150,7 +150,7 @@ class Statistic(object):
             print("%s\t%d\t%d"%(t, N_count, L_count))
 
         end = time.time()
-        print("----抽取图结构总共运行时间：%d 秒-----"%(end-start))
+        print("------成功生成 graph.json 文件，运行时间：",end-start)
 
     def get_node_attrs(self):
         path = self.attrsPath
@@ -164,7 +164,6 @@ class Statistic(object):
             times = list(graph.keys())
             times.sort(key=lambda x:x, reverse=True)
             node_attrs = self.node_attrs
-
 
             # 初始化node_attrs
             for t in times:
@@ -187,61 +186,49 @@ class Statistic(object):
             with open(path, 'w') as fs:
                 json.dump(node_attrs, fs, ensure_ascii=False)
             end = time.time()
-            print("-----属性计算时间为：\t",end-start)
 
-            # test
-            # name = "Kwan-Liu Ma"
-            # for t in times:
-            #     c_node_attrs = node_attrs[t]
-            #     # name = "Huamin Qu"
-            #     if name in c_node_attrs:
-            #         values = c_node_attrs[name]
-            #         print("%s\t%d\t%d\t%.3f\t%d\t%d\t%.3f\t%.3f\t%.3f\t%d"%(t,values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8]))
-            #         # print(c_node_attrs[name])
-            #         # print("%s\t%d"%(t, c_node_attr[name][ATTR_TO_INDEX['t_deg']]))
-            #
-            # self.test(graph,name,node_attrs)
+            print("------成功生成 node_attrs 文件，运行时间：",end-start)
 
 
-    def test(self,graph,name,node_attrs):
-        # index = ATTR_TO_INDEX[attr]
-        times = self.times
-        attrs = {}
-        for t in times:
-
-            if name in node_attrs[t]:
-                attrs[t] = 0
-                nodes = graph[t]["nodes"]
-                links = graph[t]["links"]
-                n_count = len(node_attrs[t].keys())
-                degree = 0
-                sumW = 0
-                sumBet = 0
-                coAuthors = set([])
-                # for l in links:
-                #     source,target,weight = l["source"], l["target"], l["weight"]
-                #     if name == source or name == target:
-                #         degree+=1
-                #         sumW+=weight
-                for l in links:
-                    source,target = l["source"], l["target"]
-                    if name == source:
-                        coAuthors.add(target)
-                        degree+=1
-                    if name == target:
-                        coAuthors.add(source)
-                        degree+=1
-
-                for l in links:
-                    source,target = l["source"], l["target"]
-                    if source in coAuthors and target in coAuthors:
-                        sumBet+=1
-                if degree > 1:
-                    allBet = degree*(degree-1)/2
-                    attrs[t] = round(sumBet/allBet,3)
-                else:
-                    attrs[t] = 0
-                print("%s\t%d\t%.3f"%(t,degree,attrs[t]))
+    # def test(self,graph,name,node_attrs):
+    #     # index = ATTR_TO_INDEX[attr]
+    #     times = self.times
+    #     attrs = {}
+    #     for t in times:
+    #
+    #         if name in node_attrs[t]:
+    #             attrs[t] = 0
+    #             nodes = graph[t]["nodes"]
+    #             links = graph[t]["links"]
+    #             n_count = len(node_attrs[t].keys())
+    #             degree = 0
+    #             sumW = 0
+    #             sumBet = 0
+    #             coAuthors = set([])
+    #             # for l in links:
+    #             #     source,target,weight = l["source"], l["target"], l["weight"]
+    #             #     if name == source or name == target:
+    #             #         degree+=1
+    #             #         sumW+=weight
+    #             for l in links:
+    #                 source,target = l["source"], l["target"]
+    #                 if name == source:
+    #                     coAuthors.add(target)
+    #                     degree+=1
+    #                 if name == target:
+    #                     coAuthors.add(source)
+    #                     degree+=1
+    #
+    #             for l in links:
+    #                 source,target = l["source"], l["target"]
+    #                 if source in coAuthors and target in coAuthors:
+    #                     sumBet+=1
+    #             if degree > 1:
+    #                 allBet = degree*(degree-1)/2
+    #                 attrs[t] = round(sumBet/allBet,3)
+    #             else:
+    #                 attrs[t] = 0
+    #             print("%s\t%d\t%.3f"%(t,degree,attrs[t]))
 
 
     def get_tDeg(self,graph,node_attrs):
@@ -486,26 +473,6 @@ class Statistic(object):
         plt.grid(True)
         plt.show()
 
-def drawScatterPlot(data):
-    times = [x[0] for x in data]
-    length = len(times)
-    width = 0.3
-    X = np.arange(length)+1
-    NY = [x[1] for x in data]
-    LY = [x[2] for x in data]
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.bar(X-width/2,NY,width,color="green")
-    ax.set_xlabel("X-axis")
-    ax.set_ylabel("Y-axis")
-    ax.set_xticks(X)
-    ax.set_xticklabels(times)
-    plt.grid(True)
-
-    plt.show()
-
 if __name__ == "__main__":
     start = time.time()
 
@@ -513,7 +480,6 @@ if __name__ == "__main__":
     node_attrs_path = "../../test/node_attrs.json"   # 节点属性存放路径
     graph_path = "../../test/graph.json"             # 图结构存放路径（边属性在图结构中）
     similarity_path = "../../test/similarity.json"   # 相似度文件
-    mds_path = "../../test/mds.json"                 # 降维结果文件路径
 
     # 创建实例,抽取图结构以及计算节点属性
     instance = Statistic(parse_path,node_attrs_path,graph_path,FILTER_CONDITION)

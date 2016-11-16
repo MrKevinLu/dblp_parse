@@ -13,7 +13,7 @@ import lib.compute_mds as mds
     FILTER_TIME: 解析时的过滤时间，只取时间大于或等于该时间段的文章
     GRAPH_FILTER_CONDITION：抽取网络结构时的过滤条件
 '''
-CHOOSE_VENUES = ['conf/chi/','conf/ieeevast/','journals/tvcg/','conf/apvis/','conf/infovis/','conf/vissym/','journals/cgf/','journals/ivs/','conf/jvis/','journals/vc/']
+CHOOSE_VENUES = dblpParse.CHOOSE_VENUES
 FILTER_TIME = 1990
 GRAPH_FILTER_CONDITION = sm.FILTER_CONDITION
 
@@ -35,10 +35,10 @@ SPE_CHARA_PATH = "../specialCharacter.json"         # 特殊字符对应文件
 
 if __name__ == "__main__":
     # 解析dblp文件，存入PARSED_FILR_PATH路径，
-    dblpParse.parse(SOUCE_FILE_PATH, PARSED_FILR_PATH,SPE_CHARA_PATH, CHOOSE_VENUES, FILTER_TIME)
+    # dblpParse.parse(SOUCE_FILE_PATH, PARSED_FILR_PATH,SPE_CHARA_PATH, CHOOSE_VENUES, FILTER_TIME)
 
     #　从解析后的dblp文件中抽取网络结构，并计算相关节点属性(ATTR_TO_INDEX),生成网络结构文件和节点属性文件
-    # instance = sm.Statistic(PARSED_FILR_PATH, NODE_ATTRS_PATH, GRAPH_PATH, GRAPH_FILTER_CONDITION)
+    instance = sm.Statistic(PARSED_FILR_PATH, NODE_ATTRS_PATH, GRAPH_PATH, GRAPH_FILTER_CONDITION)
 
     # 计算相似度矩阵并j计算mds降维结果，返回降维结果
     # mds_positions = mds.cal_mds(MDS_PATH, SIMILARITY_PATH, GRAPH_PATH, NODE_ATTRS_PATH, ATTR_TO_INDEX)
