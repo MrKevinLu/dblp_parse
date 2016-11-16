@@ -1,9 +1,9 @@
-
 from xml.sax import handler, make_parser
 import json
 import re
 import time
-# from pymsql
+import os
+
 
 # 所有作者信息都在以这些根标签内部
 paper_tag  =['article','inproceedings','proceedings','book',
@@ -12,37 +12,36 @@ paper_tag  =['article','inproceedings','proceedings','book',
     选择的期刊或者会议
     包括CHI，VAST, TVCG, PacificVis， InfoVis，EuroVis，Information Visualization（期刊）,JOV(journal of visuzalition), The Visual Computer
 '''
-# 选择的期刊或者会议
-# 包括 CHI，VAST, TVCG, PacificVis， InfoVis，EuroVis，Information Visualization（期刊）
+
 choose_venues = ['conf/chi/','conf/ieeevast/','journals/tvcg/','conf/apvis/','conf/infovis/','conf/vissym/','journals/cgf/','journals/ivs/','conf/jvis/','journals/vc/']
 
 
-
-class mHandler(handler.ContentHandler):
-    def __init__(self):
+class xmlHandler(handler.ContentHandler):
+    def __init__(self, parse_result_path, spe_chara_path, choose_venues, time):
         self.topTag = ""
         self.CurrentTag = ""
         self.key = ""
         self.authors = []       # 当前文章的作者
         self.currentYear = ""   # 当前文章出版时间
         self.extentYear = []    # 时间跨度范围
-        self._filter_year = 1990    # 只取发表时间大于该时间的文章
+        self._filter_year = time    # 只取发表时间大于该时间的文章
         self.venue = ""             # 发表期刊或会议
         self.parse_result = []      # 解析记录，包括1.年份 2.作者 3.发表期刊或会议
         self.isExsitAuthor = {}     # 统计作者数量
-
-
-        with open("specialCharacter.json",'r') as fs:
+        self.choose_venues = choose_venues
+        self.parse_result_path = parse_result_path
+        self.sep_chara_path = spe_chara_path
+        with open(self.sep_chara_path,'r') as fs:
             # 特殊字符
             self.specialC = json.load(fs)
 
     def startDocument(self):
-        print('Document Start')
+        print('Start Parsing......')
 
     def endDocument(self):
 
         # 将解析后的记录写入文档
-        with open("./result_data/parse_result.json", 'w') as fs:
+        with open(self.parse_result_path, 'w') as fs:
             json.dump(self.parse_result,fs,ensure_ascii=False)
 
         self.extentYear.sort()
@@ -50,7 +49,7 @@ class mHandler(handler.ContentHandler):
         print("范围：",self.extentYear)
         print("总文章数：",len(self.parse_result))
         print("总作者数：",len(self.isExsitAuthor.keys()))
-        print('Parse End!')
+        print('Parse Successfully!')
 
     def startElement(self, tag, attrs):
 
@@ -67,7 +66,7 @@ class mHandler(handler.ContentHandler):
             # 数据中 year 和 authors 可能为空，并过滤掉发表时间小于filter_year的文章
             if self.currentYear !="" and self.currentYear >= self._filter_year and self.authors!=[]:
                 # 判断该文章是否是我们制定期刊或者会议中的
-                for venue in choose_venues:
+                for venue in self.choose_venues:
                     if self.key.find(venue) > -1:
                         authors = self.authors
                         year = self.currentYear
@@ -114,16 +113,25 @@ class mHandler(handler.ContentHandler):
                 name = name.replace(s,self.specialC[s])
         return name
 
-def parseDblpXml():
-    handler = mHandler()
-    parser = make_parser()
-    parser.setContentHandler(handler)
-    with open("../dblp.xml",'r') as fs:
-        parser.parse(fs)
+
+def parse(source_file_path, parse_result_path, spe_chara_path, filter_venues, filter_time):
+    if os.path.exists(source_file_path):
+        handler = xmlHandler(parse_result_path, spe_chara_path, filter_venues,filter_time)
+        parser = make_parser()
+        parser.setContentHandler(handler)
+        with open(source_file_path,'r') as fs:
+            parser.parse(fs)
+    else:
+        print("需要解析的文件不存在或路径错误")
 
 if __name__ == "__main__":
+    source_file_path = "../../dblp.xml"
+    parse_result_path = "../../test/parse_result.json"
+    spe_chara_path = "../../specialCharacter.json"
+    # 选择的期刊或者会议
+    # 包括 CHI，VAST, TVCG, PacificVis， InfoVis，EuroVis，Information Visualization（期刊）
 
     start = time.time() # 开始时间
-    parseDblpXml()      # 解析xml
+    parse(source_file_path,parse_result_path,choose_venues,1990)      # 解析xml
     end = time.time()  # 结束时间
     print("运行时间为：",end-start)

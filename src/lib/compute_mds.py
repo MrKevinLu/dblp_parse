@@ -55,7 +55,7 @@ def cal_similarity(graphPath, attrsPath,similarityPath, attrs):
         print("正在写人similarity......")
         with open(similarityPath, 'w') as fs:
             json.dump(total_similarity, fs)
-        print("写入similarity成功。.....")
+        print("写入similarity成功......")
         end = time.time()
 
         print("end computing: ",end-start)
@@ -118,6 +118,7 @@ def cal_mds(mdsPath, similarityPath, graphPath, attrsPath, attrs):
     with open(mdsPath, 'w') as fs:
         json.dump(positions, fs)
     print("成功写入文件")
+    return positions
 '''
     随机生成邻接矩阵
 '''
@@ -155,6 +156,6 @@ def drawMDS(path, t):
     plt.show()
 
 if __name__ == "__main__":
-    generateRandomMatrix()
-
-    print(times)
+    # generateRandomMatrix()
+    pass
+    # print(times)

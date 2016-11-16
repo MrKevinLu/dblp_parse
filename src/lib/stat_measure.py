@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os
-import compute_mds as mds
 
 ' 统计相关信息 '
 
@@ -22,6 +21,7 @@ ATTR_TO_INDEX = {
     "t_venue":8       # 文章发表在1.期刊 2.会议 3.both
     # "t_ins":9       # 机构，时变
 }
+FILTER_CONDITION = {"a_pub":4}                     # 过滤条件
 
 class Statistic(object):
     def __init__(self, parseFile_path,node_attrs_path,graph_path, filter_conditions):
@@ -502,8 +502,6 @@ def drawScatterPlot(data):
     ax.set_ylabel("Y-axis")
     ax.set_xticks(X)
     ax.set_xticklabels(times)
-    # ax.set_title("nodes change")
-    # plt.title("bar chart")
     plt.grid(True)
 
     plt.show()
@@ -511,19 +509,16 @@ def drawScatterPlot(data):
 if __name__ == "__main__":
     start = time.time()
 
-    parse_path = "./result_data/parse_result.json"      # 解析文件路径
-    node_attrs_path = "./unfilter_result_data/node_attrs.json"   # 节点属性存放路径
-    graph_path = "./unfilter_result_data/graph.json"             # 图结构存放路径（边属性在图结构中）
-    similarity_path = "./unfilter_result_data/similarity.json"   # 相似度文件
-    mds_path = "./unfilter_result_data/mds.json"                 # 降维结果文件路径
-    filter_conditions = {"a_pub":1}                     # 过滤条件
+    parse_path = "../../parse_result.json"      # 解析文件路径
+    node_attrs_path = "../../test/node_attrs.json"   # 节点属性存放路径
+    graph_path = "../../test/graph.json"             # 图结构存放路径（边属性在图结构中）
+    similarity_path = "../../test/similarity.json"   # 相似度文件
+    mds_path = "../../test/mds.json"                 # 降维结果文件路径
 
-    # 创建实例
-    instance = Statistic(parse_path,node_attrs_path,graph_path,filter_conditions)
+    # 创建实例,抽取图结构以及计算节点属性
+    instance = Statistic(parse_path,node_attrs_path,graph_path,FILTER_CONDITION)
 
     # instance.drawSpecialNode("Kwan-Liu Ma", "t_pub")
-    mds.cal_mds(mds_path, similarity_path, graph_path, node_attrs_path, ATTR_TO_INDEX)
 
-    # mds.drawMDS(mds_path, "2014")
     end = time.time()
     print("-----总运行时间：%d-----" %(end-start))
