@@ -116,7 +116,7 @@ class Statistic(object):
                 venue = r[2]
                 nodes = graph[t]["nodes"]
                 links = graph[t]["links"]
-                filter_authors = []
+                filter_authors = []         # 存储该文章下过滤的节点
 
                 for au in coAuthors:
                     if self.isMeetCondition(au):
@@ -126,16 +126,16 @@ class Statistic(object):
                 self.extractRelation(filter_authors, links, venue)
 
                 # 获取节点（包含孤立节点：即度为0）
-                # for au in filter_authors:
-                #     if au not in nodes:
-                #         nodes.append(au)
-                #         filter_names.add(au)
-
-                # 获取节点（不包含孤立节点）
                 for au in filter_authors:
-                    if au not in nodes and len(filter_authors)!=1:
+                    if au not in nodes:
                         nodes.append(au)
                         filter_names.add(au)
+
+                # 获取节点（不包含孤立节点）
+                # for au in filter_authors:
+                #     if au not in nodes and len(filter_authors)!=1:
+                #         nodes.append(au)
+                #         filter_names.add(au)
 
             for t in times:
                 graph[t]["nodes"] = [{"name":x} for x in graph[t]["nodes"]]

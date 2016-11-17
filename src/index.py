@@ -38,8 +38,8 @@ if __name__ == "__main__":
     # dblpParse.parse(SOUCE_FILE_PATH, PARSED_FILR_PATH,SPE_CHARA_PATH, CHOOSE_VENUES, FILTER_TIME)
 
     #　从解析后的dblp文件中抽取网络结构，并计算相关节点属性(ATTR_TO_INDEX),生成网络结构文件和节点属性文件
-    instance = sm.Statistic(PARSED_FILR_PATH, NODE_ATTRS_PATH, GRAPH_PATH, GRAPH_FILTER_CONDITION)
+    # instance = sm.Statistic(PARSED_FILR_PATH, NODE_ATTRS_PATH, GRAPH_PATH, GRAPH_FILTER_CONDITION)
 
     # 计算相似度矩阵并j计算mds降维结果，返回降维结果
     # mds_positions = mds.cal_mds(MDS_PATH, SIMILARITY_PATH, GRAPH_PATH, NODE_ATTRS_PATH, ATTR_TO_INDEX)
-    # mds.drawMDS(MDS_PATH, 2010)   # 绘图
+    mds.drawMDS(MDS_PATH, "2016")   # 绘图
